@@ -12,7 +12,7 @@ class Config:
             "password": "secret_sauce"
         },
         "invalid_user": {
-            "username": "dada",
+            "username": "",
             "password": "secret_sauce"
         },
         "invalid_pass": {
@@ -23,4 +23,5 @@ class Config:
             "username": "",
             "password": "secret_sauce"
         }
-    }
+    }  
+    
