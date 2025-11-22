@@ -6,13 +6,13 @@ class LoginPage:
     PASSWORD_FIELD = (By.ID, "password")
     LOGIN_BTN = (By.ID, "login-button")
     
-    # Locator pesan error (muncul kalau login gagal)
+    # Locator error message
     ERROR_MSG = (By.CSS_SELECTOR, "h3[data-test='error']")
 
     def __init__(self, driver):
         self.driver = driver
 
-    # ACTIONS (Apa yg bisa dilakukan user)
+    # ACTIONS (What user can do)
     
     def open_page(self, url):
         self.driver.get(url)
@@ -26,7 +26,7 @@ class LoginPage:
     def click_login(self):
         self.driver.find_element(*self.LOGIN_BTN).click()
 
-    # Fungsi gabungan biar di Test Case lebih ringkas
+    # Fungsi gabungan test case
     def login(self, username, password):
         self.input_username(username)
         self.input_password(password)

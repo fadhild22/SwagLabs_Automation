@@ -25,24 +25,23 @@ class TestLogin(unittest.TestCase):
         self.driver.maximize_window()
 
     def test_login_success(self):
-        # 1. Inisialisasi Page
+        
         login_page = LoginPage(self.driver)
 
-        # 2. Buka URL
         login_page.open_page(Config.BASE_URL)
 
-        # 3. Lakukan Login (Pakai data dari Config)
+        # 3. Login based on config library
         login_page.login(Config.CREDENTIALS['valid']['username'], Config.CREDENTIALS['valid']['password'])
 
         # 4. Validation
-        # Kalau login sukses, user harusnya masuk ke halaman inventory
+        # if login success, user will be directed to inventory page
         self.assertIn("inventory.html", self.driver.current_url)
 
     def test_login_failed_locked_user(self):
         login_page = LoginPage(self.driver)
         login_page.open_page(Config.BASE_URL)
         
-        # Login menggunakan locked user
+        # Login as locked user
         login_page.login(Config.CREDENTIALS['locked']['username'], Config.CREDENTIALS['locked']['password'])
         
         # Validation Error Message
