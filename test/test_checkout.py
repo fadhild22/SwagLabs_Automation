@@ -5,6 +5,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -17,8 +18,23 @@ from pages.checkout_page import CheckoutPage
 class TestCheckout(unittest.TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        options = Options()
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False
+        }
+        options.add_experimental_option("prefs", prefs)
+        
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), 
+            options=options  
+        )
+        
         self.driver.maximize_window()
+        
         
         login_pg = LoginPage(self.driver)
         login_pg.open_page(Config.BASE_URL)
@@ -39,7 +55,7 @@ class TestCheckout(unittest.TestCase):
         checkout_pg = CheckoutPage(self.driver)
         
         # Isi Form (Step One)
-        checkout_pg.input_information("Budi", "Santoso", "12345")
+        checkout_pg.input_information("Reno", "Kurniawan", "23231")
         time.sleep(2)
         checkout_pg.click_continue()
         

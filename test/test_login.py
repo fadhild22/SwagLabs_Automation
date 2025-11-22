@@ -17,12 +17,21 @@ from pages.login_page import LoginPage
 class TestLogin(unittest.TestCase):
 
     def setUp(self):
-        # Seting up ChromeDriver
         options = Options()
-        options.add_experimental_option("detach", True) 
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False
+        }
+        options.add_experimental_option("prefs", prefs)
         
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        self.driver.maximize_window()
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()), 
+            options=options  
+        )
+        
 
     def test_login_success(self):
         
