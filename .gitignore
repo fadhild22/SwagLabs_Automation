@@ -1,0 +1,27 @@
+# --- Python Cache (Sampah Kompilasi) ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environment (Folder Library Berat) ---
+venv/
+env/
+.venv/
+
+# --- IDE Settings (Settingan VS Code/Pycharm) ---
+.idea/
+.vscode/
+*.swp
+
+# --- OS Files (Sampah Mac/Windows) ---
+.DS_Store
+Thumbs.db
+
+# --- Reports & Logs (Hasil Tes Sementara) ---
+*.log
+reports/
+screenshots/
+
+# --- Driver Binary (Kalau ada sisa download driver manual) ---
+chromedriver.exe
+geckodriver.exe
