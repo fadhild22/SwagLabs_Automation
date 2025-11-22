@@ -1,4 +1,6 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class InventoryPage:
     # LOCATORS
@@ -12,17 +14,18 @@ class InventoryPage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
 
     # ACTIONS
     
     def get_page_title(self):
         """Mengambil teks judul halaman untuk validasi"""
-        return self.driver.find_element(*self.PAGE_TITLE).text
+        return self.wait.until(EC.visibility_of_element_located(self.PAGE_TITLE)).text
 
     def add_backpack_to_cart(self):
         """Klik tombol Add to Cart produk Backpack"""
-        self.driver.find_element(*self.ADD_TO_CART_BACKPACK).click()
+        self.wait.until(EC.element_to_be_clickable(self.ADD_TO_CART_BACKPACK)).click()
 
     def click_cart_icon(self):
         """Klik ikon keranjang untuk pindah ke halaman Cart"""
-        self.driver.find_element(*self.CART_ICON).click()
+        self.wait.until(EC.element_to_be_clickable(self.CART_ICON)).click()

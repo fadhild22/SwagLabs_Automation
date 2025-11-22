@@ -1,13 +1,15 @@
 import sys 
 import os
-
 import unittest
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 
-# Import file diluar folder test/
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Import Config & Page Object
@@ -31,7 +33,9 @@ class TestLogin(unittest.TestCase):
             service=Service(ChromeDriverManager().install()), 
             options=options  
         )
+        self.driver.maximize_window()
         
+        self.wait = WebDriverWait(self.driver, 10)
 
     def test_login_success(self):
         
@@ -43,6 +47,7 @@ class TestLogin(unittest.TestCase):
         login_page.login(Config.CREDENTIALS['valid']['username'], Config.CREDENTIALS['valid']['password'])
 
         # 4. Validation
+        self.wait.until(EC.url_contains("inventory.html"))
         # if login success, user will be directed to inventory page
         self.assertIn("inventory.html", self.driver.current_url)
 

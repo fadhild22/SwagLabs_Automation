@@ -4,6 +4,10 @@ import unittest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -15,8 +19,22 @@ from pages.cart_page import CartPage
 class TestCart(unittest.TestCase):
 
     def setUp(self):
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        options = Options()
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False
+        }
+        options.add_experimental_option("prefs", prefs)
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=options
+        )
         self.driver.maximize_window()
+        
+        self.wait = WebDriverWait(self.driver, 10)
         
         login_pg = LoginPage(self.driver)
         login_pg.open_page(Config.BASE_URL)
@@ -25,7 +43,9 @@ class TestCart(unittest.TestCase):
         # ADD ITEM & MASUK KE CART PAGE
         inventory_pg = InventoryPage(self.driver)
         inventory_pg.add_backpack_to_cart() 
-        inventory_pg.click_cart_icon()      
+        inventory_pg.click_cart_icon()
+        
+        self.wait.until(EC.url_contains("cart.html"))
 
     def test_item_is_in_cart(self):
         """Memastikan barang yang ditambah benar-benar ada di keranjang"""
@@ -45,6 +65,7 @@ class TestCart(unittest.TestCase):
         # Klik tombol Checkout
         cart_pg.click_checkout()
         
+        self.wait.until(EC.url_contains("checkout-step-one"))
         self.assertIn("checkout-step-one", self.driver.current_url)
 
     def tearDown(self):

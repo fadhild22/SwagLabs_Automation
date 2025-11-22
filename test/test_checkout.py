@@ -1,11 +1,15 @@
 import sys
 import os
 import unittest
-import time
+
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -35,6 +39,7 @@ class TestCheckout(unittest.TestCase):
         
         self.driver.maximize_window()
         
+        self.wait = WebDriverWait(self.driver, 10)
         
         login_pg = LoginPage(self.driver)
         login_pg.open_page(Config.BASE_URL)
@@ -47,24 +52,23 @@ class TestCheckout(unittest.TestCase):
         # CLICK CHECKOUT (Masuk ke halaman pengisian data)
         cart_pg = CartPage(self.driver)
         cart_pg.click_checkout()
-        time.sleep(3)
 
     def test_checkout_success(self):
         """Test Full Flow Checkout sampai sukses"""
-        time.sleep(5)
         checkout_pg = CheckoutPage(self.driver)
         
+        self.wait.until(EC.visibility_of_element_located((By.ID, "first-name")))
         # Isi Form (Step One)
         checkout_pg.input_information("Reno", "Kurniawan", "23231")
-        time.sleep(2)
         checkout_pg.click_continue()
         
+        self.wait.until(EC.url_contains("checkout-step-two"))
         # Validasi URL pindah ke step-two
-        time.sleep(3)
         self.assertIn("checkout-step-two", self.driver.current_url)
         
         checkout_pg.click_finish()
         
+        self.wait.until(EC.visibility_of_element_located((By.CLASS_NAME, "complete-header")))
         # 3. Validation
         actual_msg = checkout_pg.get_success_message()
         self.assertEqual(actual_msg, "Thank you for your order!")

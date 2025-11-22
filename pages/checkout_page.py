@@ -1,6 +1,6 @@
-import time
-
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class CheckoutPage:
     # --- LOCATORS ---
@@ -18,34 +18,33 @@ class CheckoutPage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
 
     # --- ACTIONS ---
     
     def input_information(self, first, last, postal):
         """Mengisi form data diri di Step 1"""
-        self.driver.find_element(*self.FIRST_NAME).click()
-        self.driver.find_element(*self.FIRST_NAME).clear()
-        self.driver.find_element(*self.FIRST_NAME).send_keys(first)
-        time.sleep(0.5)
+        first_name_field = self.wait.until(EC.visibility_of_element_located(self.FIRST_NAME))
+        first_name_field.clear()
+        first_name_field.send_keys(first)
         
-        self.driver.find_element(*self.LAST_NAME).click()
-        self.driver.find_element(*self.LAST_NAME).clear()
-        self.driver.find_element(*self.LAST_NAME).send_keys(last)
-        time.sleep(0.5)
+        last_name_field = self.wait.until(EC.visibility_of_element_located(self.LAST_NAME))
+        last_name_field.clear()
+        last_name_field.send_keys(last)
         
-        self.driver.find_element(*self.POSTAL_CODE).click()
-        self.driver.find_element(*self.POSTAL_CODE).clear()
-        self.driver.find_element(*self.POSTAL_CODE).send_keys(postal)
-        time.sleep(0.5)
+        postal_code_field = self.wait.until(EC.visibility_of_element_located(self.POSTAL_CODE))
+        postal_code_field.clear()
+        postal_code_field.send_keys(postal)
+        
 
     def click_continue(self):
         """Klik tombol Continue untuk ke Step 2"""
-        self.driver.find_element(*self.CONTINUE_BTN).click()
+        self.wait.until(EC.element_to_be_clickable(self.CONTINUE_BTN)).click()
 
     def click_finish(self):
         """Klik tombol Finish di Step 2"""
-        self.driver.find_element(*self.FINISH_BTN).click()
+        self.wait.until(EC.element_to_be_clickable(self.FINISH_BTN)).click()
 
     def get_success_message(self):
         """Mengambil pesan sukses di Step 3"""
-        return self.driver.find_element(*self.COMPLETE_HEADER).text
+        return self.wait.until(EC.visibility_of_element_located(self.COMPLETE_HEADER)).text

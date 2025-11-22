@@ -1,30 +1,47 @@
 import sys
 import os
 import unittest
-import time
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import Config
-from pages.login_page import LoginPage       # Kita butuh ini buat Login dulu
-from pages.inventory_page import InventoryPage # Ini yang mau kita tes
+from pages.login_page import LoginPage       
+from pages.inventory_page import InventoryPage 
 
 class TestInventory(unittest.TestCase):
 
     def setUp(self):
-        # 1. Open Browser
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+        options = Options()
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False
+        }
+        options.add_experimental_option("prefs", prefs)
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=options
+        )
         self.driver.maximize_window()
+        
+        self.wait = WebDriverWait(self.driver, 10)
         
         # 2. Pre-required steps using login function from LoginPage
         login_pg = LoginPage(self.driver)
         login_pg.open_page(Config.BASE_URL)
-        
         login_pg.login(Config.CREDENTIALS['valid']['username'], Config.CREDENTIALS['valid']['password'])
+        
+        self.wait.until(EC.url_contains("inventory.html"))
 
     def test_ensure_on_inventory_page(self):
         """Memastikan user benar-benar ada di halaman Inventory"""
@@ -33,7 +50,6 @@ class TestInventory(unittest.TestCase):
         # Validasi Judul Halaman harus "Products"
         actual_title = inventory_pg.get_page_title()
         self.assertEqual(actual_title, "Products")
-        time.sleep(5)
 
     def test_add_item_to_cart(self):
         """Memastikan bisa klik Add to Cart"""
@@ -41,7 +57,6 @@ class TestInventory(unittest.TestCase):
         
         # Klik Add to Cart
         inventory_pg.add_backpack_to_cart()
-        time.sleep(5)
         
 
     def tearDown(self):

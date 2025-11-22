@@ -1,4 +1,6 @@
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class LoginPage:
     # LOCATE BY ID
@@ -11,20 +13,20 @@ class LoginPage:
 
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
 
     # ACTIONS (What user can do)
-    
     def open_page(self, url):
         self.driver.get(url)
 
     def input_username(self, username):
-        self.driver.find_element(*self.USERNAME_FIELD).send_keys(username)
+        self.wait.until(EC.visibility_of_element_located(self.USERNAME_FIELD)).send_keys(username)
 
     def input_password(self, password):
-        self.driver.find_element(*self.PASSWORD_FIELD).send_keys(password)
+        self.wait.until(EC.visibility_of_element_located(self.PASSWORD_FIELD)).send_keys(password)
 
     def click_login(self):
-        self.driver.find_element(*self.LOGIN_BTN).click()
+        self.wait.until(EC.element_to_be_clickable(self.LOGIN_BTN)).click()
 
     # Fungsi gabungan test case
     def login(self, username, password):
@@ -33,4 +35,4 @@ class LoginPage:
         self.click_login()
 
     def get_error_message(self):
-        return self.driver.find_element(*self.ERROR_MSG).text
+        return self.wait.until(EC.visibility_of_element_located(self.ERROR_MSG)).text
