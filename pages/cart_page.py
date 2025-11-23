@@ -8,6 +8,10 @@ class CartPage:
     PAGE_TITLE = (By.CLASS_NAME, "title")
     INVENTORY_ITEM_NAME = (By.CLASS_NAME, "inventory_item_name")
     CHECKOUT_BTN = (By.ID, "checkout")
+    
+    REMOVE_BTN = (By.ID, "remove-sauce-labs-backpack")
+    CONTINUE_SHOPPING_BTN = (By.ID, "continue-shopping")
+    CART_ITEM_CONTAINER = (By.CLASS_NAME, "cart_item")
 
     def __init__(self, driver):
         self.driver = driver
@@ -23,3 +27,13 @@ class CartPage:
 
     def click_checkout(self):
         self.wait.until(EC.element_to_be_clickable(self.CHECKOUT_BTN)).click()
+    
+    def click_remove_item(self):
+        self.wait.until(EC.element_to_be_clickable(self.REMOVE_BTN)).click()
+
+    def click_continue_shopping(self):
+        self.wait.until(EC.element_to_be_clickable(self.CONTINUE_SHOPPING_BTN)).click()
+
+    def is_item_displayed(self):
+        items = self.driver.find_elements(*self.CART_ITEM_CONTAINER)
+        return len(items) > 0

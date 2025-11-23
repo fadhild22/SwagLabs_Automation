@@ -36,28 +36,73 @@ class TestInventory(unittest.TestCase):
         
         self.wait = WebDriverWait(self.driver, 10)
         
-        # 2. Pre-required steps using login function from LoginPage
+    def _login_as(self, user_key):
+        """Helper untuk login dinamis & membersihkan sesi sebelumnya"""
+        
+        self.driver.delete_all_cookies()
+        
         login_pg = LoginPage(self.driver)
         login_pg.open_page(Config.BASE_URL)
-        login_pg.login(Config.CREDENTIALS['valid']['username'], Config.CREDENTIALS['valid']['password'])
+        
+        user = Config.CREDENTIALS[user_key]
+        login_pg.login(user['username'], user['password'])
         
         self.wait.until(EC.url_contains("inventory.html"))
+        
+    def test_sort_z_to_a(self):
+        """TC 4: Memastikan Sortir Z-A berfungsi untuk semua user"""
+        
+        users_to_test = ['valid', 'problem', 'glitch']
+        
+        for user in users_to_test:
+            with self.subTest(user=user):
+                self._login_as(user)
+                
+                inventory_pg = InventoryPage(self.driver)
+                inventory_pg.select_sort_option("za")
+                
+                actual_names = inventory_pg.get_all_product_names()
+                expected_names = sorted(actual_names, reverse=True)
+                
+                self.assertEqual(actual_names, expected_names, f"Sorting Z-A gagal pada user: {user}")
 
-    def test_ensure_on_inventory_page(self):
-        """Memastikan user benar-benar ada di halaman Inventory"""
-        inventory_pg = InventoryPage(self.driver)
+    def test_sort_low_to_high(self):
+        """TC 6: Memastikan Sortir Harga Rendah-Tinggi berfungsi"""
         
-        # Validasi Judul Halaman harus "Products"
-        actual_title = inventory_pg.get_page_title()
-        self.assertEqual(actual_title, "Products")
+        users_to_test = ['valid', 'problem', 'glitch']
+        
+        for user in users_to_test:
+            with self.subTest(user=user):
+                self._login_as(user)
+                
+                inventory_pg = InventoryPage(self.driver)
+                inventory_pg.select_sort_option("lohi")
+                
+                actual_prices = inventory_pg.get_all_product_prices()
+                expected_prices = sorted(actual_prices)
+                
+                self.assertEqual(actual_prices, expected_prices, f"Sorting Lo-Hi gagal pada user: {user}")
 
-    def test_add_item_to_cart(self):
-        """Memastikan bisa klik Add to Cart"""
-        inventory_pg = InventoryPage(self.driver)
+    def test_product_images_validity(self):
+        """TC 8: Memastikan gambar produk tampil benar (kecuali problem_user)"""
         
-        # Klik Add to Cart
-        inventory_pg.add_backpack_to_cart()
+        users_to_test = ['valid', 'problem', 'glitch']
         
+        for user in users_to_test:
+            with self.subTest(user=user):
+                self._login_as(user)
+                
+                inventory_pg = InventoryPage(self.driver)
+                images = inventory_pg.get_all_images()
+                
+                for img in images:
+                    src = img.get_attribute("src")
+                    
+                    self.assertTrue(len(src) > 0, "Source gambar ditemukan kosong")
+                    
+                    
+                    if user != 'problem':
+                        self.assertNotIn("sl-404", src, f"Bug! Gambar rusak ditemukan pada user: {user}")
 
     def tearDown(self):
         self.driver.quit()

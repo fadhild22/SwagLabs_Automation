@@ -19,7 +19,7 @@ class Config:
             "password": "secret_sauce"
         },
         "invalid_user": {
-            "username": "",
+            "username": "wrong_users",
             "password": "secret_sauce"
         },
         "invalid_pass": {
