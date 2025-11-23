@@ -1,6 +1,7 @@
 import sys 
 import os
 import unittest
+import datetime
 
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
@@ -157,6 +158,24 @@ class TestLogin(unittest.TestCase):
                 self.assertEqual(self.driver.current_url, Config.BASE_URL)
 
     def tearDown(self):
+        if hasattr(self, '_outcome'):
+            result = self._outcome.result
+            if result.errors or result.failures:
+                all_problems = result.errors + result.failures
+                if any(test == self for test, error_msg in all_problems):
+                    if not os.path.exists("screenshots"):
+                        os.makedirs("screenshots")
+                    
+                    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    test_name = self._testMethodName
+                    filename = f"screenshots/{test_name}_{timestamp}.png"
+                    
+                    try:
+                        self.driver.save_screenshot(filename)
+                        print(f"\n Screenshot Error Saved IN: {filename}")
+                    except Exception as e:
+                        print(f"Failed to take screenshot: {e}")
+        
         self.driver.quit()
 
 if __name__ == "__main__":

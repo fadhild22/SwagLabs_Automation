@@ -17,7 +17,7 @@ class CartPage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
-    # --- ACTIONS ---
+    # ACTIONS
     def get_page_title(self):
         return self.wait.until(EC.visibility_of_element_located(self.PAGE_TITLE)).text
 
