@@ -3,18 +3,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 class CheckoutPage:
-    # --- LOCATORS ---
-    # Step 1: Form Input
+    # LOCATORS 
     FIRST_NAME = (By.ID, "first-name")
     LAST_NAME = (By.ID, "last-name")
     POSTAL_CODE = (By.ID, "postal-code")
     CONTINUE_BTN = (By.ID, "continue")
 
-    # Step 2: Halaman Overview
+    ERROR_MSG = (By.CSS_SELECTOR, "[data-test='error']")
+    
     FINISH_BTN = (By.ID, "finish")
-
-    # Step 3: Halaman Complete (Sukses)
-    COMPLETE_HEADER = (By.CLASS_NAME, "complete-header") # Tulisannya: "Thank you for your order!"
+    ITEM_NAME_OVERVIEW = (By.CLASS_NAME, "inventory_item_name")
+    COMPLETE_HEADER = (By.CLASS_NAME, "complete-header") 
 
     def __init__(self, driver):
         self.driver = driver
@@ -48,3 +47,10 @@ class CheckoutPage:
     def get_success_message(self):
         """Mengambil pesan sukses di Step 3"""
         return self.wait.until(EC.visibility_of_element_located(self.COMPLETE_HEADER)).text
+    
+    def get_item_name_overview(self):
+        return self.wait.until(EC.visibility_of_element_located(self.ITEM_NAME_OVERVIEW)).text
+    
+    def get_error_message(self):
+        """Mengambil teks pesan error"""
+        return self.wait.until(EC.visibility_of_element_located(self.ERROR_MSG)).text
