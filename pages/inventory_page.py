@@ -5,19 +5,17 @@ from selenium.webdriver.support import expected_conditions as EC
 class InventoryPage:
     # LOCATORS
     PAGE_TITLE = (By.CLASS_NAME, "title")
-    
-    # Button add to cart for backpack product
     ADD_TO_CART_BACKPACK = (By.ID, "add-to-cart-sauce-labs-backpack")
-    
-    # Icon shopping cart
     CART_ICON = (By.CLASS_NAME, "shopping_cart_link")
+    
+    BURGER_MENU_BTN = (By.ID, "react-burger-menu-btn")
+    LOGOUT_LINK = (By.ID, "logout_sidebar_link")
 
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
     # ACTIONS
-    
     def get_page_title(self):
         """Mengambil teks judul halaman untuk validasi"""
         return self.wait.until(EC.visibility_of_element_located(self.PAGE_TITLE)).text
@@ -29,3 +27,11 @@ class InventoryPage:
     def click_cart_icon(self):
         """Klik ikon keranjang untuk pindah ke halaman Cart"""
         self.wait.until(EC.element_to_be_clickable(self.CART_ICON)).click()
+    
+    def click_burger_menu(self):
+        """Klik tombol menu di pojok kiri atas"""
+        self.wait.until(EC.element_to_be_clickable(self.BURGER_MENU_BTN)).click()
+
+    def click_logout(self):
+        """Klik tombol Logout di sidebar"""
+        self.wait.until(EC.element_to_be_clickable(self.LOGOUT_LINK)).click()
