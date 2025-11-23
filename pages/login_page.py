@@ -8,7 +8,6 @@ class LoginPage:
     PASSWORD_FIELD = (By.ID, "password")
     LOGIN_BTN = (By.ID, "login-button")
     
-    # Locator error message
     ERROR_MSG = (By.CSS_SELECTOR, "h3[data-test='error']")
 
     def __init__(self, driver):

@@ -61,10 +61,8 @@ class InventoryPage:
         
         self.wait.until(EC.visibility_of_element_located(self.ITEM_NAMES))
         
-        # Ambil semua elemen
         elements = self.driver.find_elements(*self.ITEM_NAMES)
         
-        # Ekstrak teksnya saja -> ['Sauce Labs Backpack', 'Sauce Labs Bike Light', ...]
         return [el.text for el in elements]
 
     def get_all_product_prices(self):
@@ -72,8 +70,6 @@ class InventoryPage:
         self.wait.until(EC.visibility_of_element_located(self.ITEM_PRICES))
         elements = self.driver.find_elements(*self.ITEM_PRICES)
         
-        # Ekstrak teks, buang tanda '$', ubah ke float
-        # Contoh: "$29.99" -> 29.99
         return [float(el.text.replace("$", "")) for el in elements]
 
     def get_all_images(self):
@@ -91,6 +87,5 @@ class InventoryPage:
         return self.wait.until(EC.visibility_of_element_located(self.REMOVE_BTN_BACKPACK)).is_displayed()
 
     def click_first_item_name(self):
-        # Klik produk pertama untuk masuk ke detail
         items = self.driver.find_elements(*self.ITEM_NAME_LINK)
         items[0].click()

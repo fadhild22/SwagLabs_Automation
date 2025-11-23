@@ -19,8 +19,7 @@ class CheckoutPage:
         self.driver = driver
         self.wait = WebDriverWait(driver, 10)
 
-    # --- ACTIONS ---
-    
+    # ACTIONS
     def input_information(self, first, last, postal):
         """Mengisi form data diri di Step 1"""
         first_name_field = self.wait.until(EC.visibility_of_element_located(self.FIRST_NAME))
